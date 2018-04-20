@@ -24,7 +24,7 @@ class ImportExcelController extends CI_Controller {
 
             $config['upload_path'] = $path;
 
-            $config['allowed_types'] = 'xlsx|csv|xls';
+            $config['allowed_types'] = 'xlsx|xls';
 
             $config['remove_spaces'] = TRUE;
 
@@ -55,73 +55,102 @@ class ImportExcelController extends CI_Controller {
             }
             $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
 
-            $arrayCount = count($allDataInSheet);
-            $flag = 0;
 
-            $createArray = array('reg_no', 'owner_name', 'address', 'regn_date', 'maker','maker_model','mobile','import_date','last_date','next_date','modify_date','note','vehicle_type');
 
-            $makeArray = array('reg_no' => 'reg_no', 'owner_name' => 'owner_name', 'address' => 'address', 'regn_date' => 'regn_date', 'maker' => 'maker','maker_model' => 'maker_model','mobile' => 'mobile','import_date' => 'import_date','last_date' => 'last_date','next_date' => 'next_date','modify_date' => 'modify_date','note' => 'note','vehicle_type' => 'vehicle_type',);
 
-            $SheetDataKey = array();
 
-            foreach ($allDataInSheet as $dataInSheet) {
-                foreach ($dataInSheet as $key => $value) {
-                    if (in_array(trim($value), $createArray)) {
-                        $value = preg_replace('/\s+/', '', $value);
-                        $SheetDataKey[trim($value)] = $key;
-                    } else {
+// echo "<pre>";
+foreach ($allDataInSheet as $key => $value) {
+
+$data=array(
+'reg_no'=>$value['A'],
+ 'owner_name'=>$value['B'],
+ 'address'=>$value['C'],
+ 'regn_date'=>$value['D'],
+  'maker'=>$value['E'],
+  'maker_model'=>$value['F'],
+  'mobile'=>$value['G']
+);
+
+
+$res=$this->db->insert('importexcel',$data);
+
+// var_dump($res);
+}
+// die;
+
+
+
+
+            // $arrayCount = count($allDataInSheet);
+            // $flag = 0;
+
+
+
+            // $createArray = array('reg_no', 'owner_name', 'address', 'regn_date', 'maker','maker_model','mobile','import_date','last_date','next_date','modify_date','note','vehicle_type');
+
+            // $makeArray = array('reg_no' => 'reg_no', 'owner_name' => 'owner_name', 'address' => 'address', 'regn_date' => 'regn_date', 'maker' => 'maker','maker_model' => 'maker_model','mobile' => 'mobile','import_date' => 'import_date','last_date' => 'last_date','next_date' => 'next_date','modify_date' => 'modify_date','note' => 'note','vehicle_type' => 'vehicle_type',);
+
+            // $SheetDataKey = array();
+
+            // foreach ($allDataInSheet as $dataInSheet) {
+            //     foreach ($dataInSheet as $key => $value) {
+            //         if (in_array(trim($value), $createArray)) {
+            //             $value = preg_replace('/\s+/', '', $value);
+            //             $SheetDataKey[trim($value)] = $key;
+            //         } else {
                         
-                    }
-                }
-            }
+            //         }
+            //     }
+            // }
 
-            $data = array_diff_key($makeArray, $SheetDataKey);
+            // $data = array_diff_key($makeArray, $SheetDataKey);
 
-            // echo "<pre>"; print_r($data); exit;
+            // echo "<pre>"; var_dump($data); die;
 
-            if (empty($data)) {
-                $flag = 1;
-            }
+            // if (empty($data)) {
+            //     $flag = 1;
+            // }
 
-            if ($flag == 1) {
-                for ($i = 2; $i <= $arrayCount; $i++) {
+            // if ($flag == 1) {
+            //     for ($i = 2; $i <= $arrayCount; $i++) {
 
-                    $addresses = array();
-                    $reg_no = $SheetDataKey['reg_no'];
-                    $owner_name = $SheetDataKey['owner_name'];
-                    $address = $SheetDataKey['address'];
-                    $regn_date = $SheetDataKey['regn_date'];
-                    $maker = $SheetDataKey['maker'];
-                    $maker_model = $SheetDataKey['maker_model'];
-                    $mobile = $SheetDataKey['mobile'];
-                    $import_date = $SheetDataKey['import_date'];
-                    $last_date = $SheetDataKey['last_date'];
-                    $next_date = $SheetDataKey['next_date'];
-                    $modify_date = $SheetDataKey['modify_date'];
-                    $note = $SheetDataKey['note'];
-                    $vehicle_type = $SheetDataKey['vehicle_type'];
+            //         $addresses = array();
+            //         $reg_no = $SheetDataKey['reg_no'];
+            //         $owner_name = $SheetDataKey['owner_name'];
+            //         $address = $SheetDataKey['address'];
+            //         $regn_date = $SheetDataKey['regn_date'];
+            //         $maker = $SheetDataKey['maker'];
+            //         $maker_model = $SheetDataKey['maker_model'];
+            //         $mobile = $SheetDataKey['mobile'];
+            //         $import_date = $SheetDataKey['import_date'];
+            //         $last_date = $SheetDataKey['last_date'];
+            //         $next_date = $SheetDataKey['next_date'];
+            //         $modify_date = $SheetDataKey['modify_date'];
+            //         $note = $SheetDataKey['note'];
+            //         $vehicle_type = $SheetDataKey['vehicle_type'];
 
-                    // $reg_no = filter_var(trim($allDataInSheet[$i][$reg_no]), FILTER_SANITIZE_STRING);
-                    // $owner_name = filter_var(trim($allDataInSheet[$i][$owner_name]), FILTER_SANITIZE_STRING);
-                    // $maker = filter_var(trim($allDataInSheet[$i][$maker]), FILTER_SANITIZE_EMAIL);
-                    // $maker_model = filter_var(trim($allDataInSheet[$i][$maker_model]), FILTER_SANITIZE_STRING);
-                    // $mobile = filter_var(trim($allDataInSheet[$i][$mobile]), FILTER_SANITIZE_STRING);
+            //         // $reg_no = filter_var(trim($allDataInSheet[$i][$reg_no]), FILTER_SANITIZE_STRING);
+            //         // $owner_name = filter_var(trim($allDataInSheet[$i][$owner_name]), FILTER_SANITIZE_STRING);
+            //         // $maker = filter_var(trim($allDataInSheet[$i][$maker]), FILTER_SANITIZE_EMAIL);
+            //         // $maker_model = filter_var(trim($allDataInSheet[$i][$maker_model]), FILTER_SANITIZE_STRING);
+            //         // $mobile = filter_var(trim($allDataInSheet[$i][$mobile]), FILTER_SANITIZE_STRING);
 
-                    $fetchData[] = array('reg_no' => $reg_no, 'owner_name' => $owner_name, 'address' => $address, 'regn_date' => $regn_date, 'maker' => $maker,'maker_model' => $maker_model,'mobile' => $mobile,'import_date' => $import_date,'last_date' => $last_date,'next_date' => $next_date,'modify_date' => $modify_date,'note' => $note,'vehicle_type' => $vehicle_type);
+            //         $fetchData[] = array('reg_no' => $reg_no, 'owner_name' => $owner_name, 'address' => $address, 'regn_date' => $regn_date, 'maker' => $maker,'maker_model' => $maker_model,'mobile' => $mobile,'import_date' => $import_date,'last_date' => $last_date,'next_date' => $next_date,'modify_date' => $modify_date,'note' => $note,'vehicle_type' => $vehicle_type);
 
-                }              
+            //     }              
 
 
 
-                $data['employeeInfo'] = $fetchData;
-                $this->import->setBatchImport($fetchData);
-                $this->import->importData();
+            //     $data['employeeInfo'] = $fetchData;
+            //     $this->import->setBatchImport($fetchData);
+            //     $this->import->importData();
 
-            } else {
-                echo "Please import correct file";
-            }
+            // } else {
+            //     echo "Please import correct file";
+            // }
         }
-
+        $data=$this->db->get('importexcel')->result_array();
         $this->load->view('admin/products/index',$data);
         
     }
