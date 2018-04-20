@@ -1,6 +1,6 @@
 
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12"> 
         <h1>Data <small>Overview</small></h1>
         <ol class="breadcrumb">
             <li class="active"><i class="fa fa-list"></i> Import Members</li>
@@ -22,7 +22,7 @@ $data = array(
     'data-icon' => 'false'
 );
 $output .= form_upload($data);
-$output .= '</div> <span style="color:red;">*Please choose an Excel file(.xls or .xlxs) as Input</span></div>';
+$output .= '</div> <span style="color:red;">*Please choose an Excel file(.xls or .xlsx) as Input</span></div>';
 $output .= '<div class="col-lg-12 col-sm-12"><div class="form-group text-right">';
 $data = array(
     'name' => 'importfile',

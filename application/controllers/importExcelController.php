@@ -11,7 +11,7 @@ class ImportExcelController extends CI_Controller {
         $data['page'] = 'import';
         $this->load->view('admin/products/index');
     }
-
+ 
         // import excel data
      public function save() {
 
@@ -24,7 +24,7 @@ class ImportExcelController extends CI_Controller {
 
             $config['upload_path'] = $path;
 
-            $config['allowed_types'] = 'xlsx|xls';
+            $config['allowed_types'] = 'xlsx|csv|xls';
 
             $config['remove_spaces'] = TRUE;
 
@@ -44,6 +44,7 @@ class ImportExcelController extends CI_Controller {
                 $import_xls_file = 0;
             }
             $inputFileName = $path . $import_xls_file;
+
             try {
                 $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -53,13 +54,16 @@ class ImportExcelController extends CI_Controller {
                         . '": ' . $e->getMessage());
             }
             $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-            
+
             $arrayCount = count($allDataInSheet);
             $flag = 0;
+
             $createArray = array('reg_no', 'owner_name', 'address', 'regn_date', 'maker','maker_model','mobile','import_date','last_date','next_date','modify_date','note','vehicle_type');
+
             $makeArray = array('reg_no' => 'reg_no', 'owner_name' => 'owner_name', 'address' => 'address', 'regn_date' => 'regn_date', 'maker' => 'maker','maker_model' => 'maker_model','mobile' => 'mobile','import_date' => 'import_date','last_date' => 'last_date','next_date' => 'next_date','modify_date' => 'modify_date','note' => 'note','vehicle_type' => 'vehicle_type',);
 
             $SheetDataKey = array();
+
             foreach ($allDataInSheet as $dataInSheet) {
                 foreach ($dataInSheet as $key => $value) {
                     if (in_array(trim($value), $createArray)) {
@@ -70,13 +74,18 @@ class ImportExcelController extends CI_Controller {
                     }
                 }
             }
+
             $data = array_diff_key($makeArray, $SheetDataKey);
-         
+
+            // echo "<pre>"; print_r($data); exit;
+
             if (empty($data)) {
                 $flag = 1;
             }
+
             if ($flag == 1) {
                 for ($i = 2; $i <= $arrayCount; $i++) {
+
                     $addresses = array();
                     $reg_no = $SheetDataKey['reg_no'];
                     $owner_name = $SheetDataKey['owner_name'];
@@ -92,13 +101,18 @@ class ImportExcelController extends CI_Controller {
                     $note = $SheetDataKey['note'];
                     $vehicle_type = $SheetDataKey['vehicle_type'];
 
-                    $firstName = filter_var(trim($allDataInSheet[$i][$firstName]), FILTER_SANITIZE_STRING);
-                    $lastName = filter_var(trim($allDataInSheet[$i][$lastName]), FILTER_SANITIZE_STRING);
-                    $email = filter_var(trim($allDataInSheet[$i][$email]), FILTER_SANITIZE_EMAIL);
-                    $dob = filter_var(trim($allDataInSheet[$i][$dob]), FILTER_SANITIZE_STRING);
-                    $contactNo = filter_var(trim($allDataInSheet[$i][$contactNo]), FILTER_SANITIZE_STRING);
+                    // $reg_no = filter_var(trim($allDataInSheet[$i][$reg_no]), FILTER_SANITIZE_STRING);
+                    // $owner_name = filter_var(trim($allDataInSheet[$i][$owner_name]), FILTER_SANITIZE_STRING);
+                    // $maker = filter_var(trim($allDataInSheet[$i][$maker]), FILTER_SANITIZE_EMAIL);
+                    // $maker_model = filter_var(trim($allDataInSheet[$i][$maker_model]), FILTER_SANITIZE_STRING);
+                    // $mobile = filter_var(trim($allDataInSheet[$i][$mobile]), FILTER_SANITIZE_STRING);
+
                     $fetchData[] = array('reg_no' => $reg_no, 'owner_name' => $owner_name, 'address' => $address, 'regn_date' => $regn_date, 'maker' => $maker,'maker_model' => $maker_model,'mobile' => $mobile,'import_date' => $import_date,'last_date' => $last_date,'next_date' => $next_date,'modify_date' => $modify_date,'note' => $note,'vehicle_type' => $vehicle_type);
+
                 }              
+
+
+
                 $data['employeeInfo'] = $fetchData;
                 $this->import->setBatchImport($fetchData);
                 $this->import->importData();
