@@ -11,5 +11,7 @@
 	<script src="<?php echo base_url(); ?>assets/js/jquery-1.7.1.min.js"></script>
 	<script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
 	<script src="<?php echo base_url(); ?>assets/js/admin.min.js"></script>
+	<script src="<?php echo base_url(); ?>assets/js/importdata.js"></script>
+
 </body>
 </html>

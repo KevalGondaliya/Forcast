@@ -20,6 +20,11 @@ class Import_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
+   function editExcel($id,$data){
+    
+        $this->db->where('id', $id);
+        $this->db->update('importexcel', $data);
+    }
 
 }
 
